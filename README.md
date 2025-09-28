@@ -32,35 +32,46 @@ Here is the breakdown of the first 7 days cost:
 | Security / GRC | Secret hygiene, identity boundaries, future logging & observability tie-ins |
 | AI / Data Engineer | Using Azure OpenAI (key vs Entra ID), structured experimentation |
 
+Below are some of the achievements through the proposed methodology:
+
+Value 1 - Mesure the Deployment Time and provide inputs for BCDR Plan.
+![alt text](99_Images/Resource_Deployment_Bicepjpg.jpg)
+
+Value 2 - Estimate Regulatory Statndard and Compliance Over Time from Day 1
+![alt text](99_Images/poc_regulatory_compliance_over_time.jpg)
+
+Value 3 - Evaluate the AI Agent Telemetry and benchmark
+![alt text](99_Images/azureOpenAI_POC_API_Insights.jpg)
+
 ## 3. High-Level Architecture (Incremental Build)
 Phase 1 provisions a core network + identity boundary. Phase 2 links private DNS, AI Foundry (Cognitive Services account), optional VM, and (future) Log Analytics. Phase 3 introduces the AI agent code with both API key and keyless (Entra ID) authentication patterns.
 
 ```text
-┌──────────────┐      ┌──────────────────────────────┐
-│   Developer  │ -->  │  AI Agent (Python)           │
-└──────────────┘      │  - openai Azure client       │
-	▲             │  - Entra ID (DefaultAzureCred)│
-	│             └────────────┬─────────────────┘
-	│                          │
-	│                    Private / Public Endpoint
-	│                          │
-	│                 ┌────────▼────────┐
-	│                 │ Azure OpenAI /  │
-	│                 │  AI Foundry     │
-	│                 └────────┬────────┘
-	│                          │
-	│                 ┌────────▼────────────┐
-	│                 │ Private DNS Zone     │
-	│                 └────────┬────────────┘
-	│                          │
-	│                 ┌────────▼──────────┐
-	│                 │ VNet + Subnets     │
-	│                 │ (Hub / Spokes)     │
-	│                 └────────┬──────────┘
-	│                          │
-	│                 ┌────────▼──────────┐
-	│                 │ Resource Group     │
-	│                 └────────────────────┘
+┌──────────────┐       ┌─────────────────────────────┐
+│   Developer  │ -->   │ AI Agent (Python)           │
+└──────────────┘       │ - openai Azure client       │
+	▲                  │- Entra ID (DefaultAzureCred)│
+	│                  └────────────┬───────────────┘
+	│                               │
+	│                       Private / Public Endpoint
+	│                               │
+	│                      ┌────────▼────────┐
+	│                      │ Azure OpenAI /  │
+	│                      │  AI Foundry     │
+	│                      └────────┬────────┘
+	│                               │
+	│                      ┌────────▼────────────┐
+	│                      │ Private DNS Zone    │
+	│                      └────────┬────────────┘
+	|                               │
+	│                      ┌────────▼──────────┐
+	│                      │ VNet + Subnets    │
+	│                      │ (Hub / Spokes)    │
+	│                      └────────┬──────────┘
+	│                               │
+	│                      ┌────────▼──────────┐
+	│                      │ Resource Group    │
+	│                      └───────────────────┘
 ```
 
 > The `.vsdx` diagram in `Drawing1.vsdx` can be updated as the system evolves.
