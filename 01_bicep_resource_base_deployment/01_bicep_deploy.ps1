@@ -36,12 +36,12 @@ if (-not $AzureRegion) {
     exit 1
 }
 
-#$bicepFileName = "02_vnet_snet.bicep"
+$bicepFileName = "02_vnet_snet.bicep"
 #$bicepFileName = "03_privatedns.bicep"
 #$bicepFileName = "04_azureloganalytics.bicep"
 #$bicepFileName = "05_azureFoundry.bicep"
 #$bicepFileName = "06_vm.bicep"
-$bicepFileName = "07_vpngateway.bicep"
+#$bicepFileName = "07_vpngateway.bicep"
 
 # Derive deployment name from the Bicep file name and adds the timestamp
 $bicepDeploymentName = $bicepFileName.Split(".")[0] + "-deployment-" + (Get-Date -Format "yyyyMMddHHmmss")  
@@ -67,4 +67,5 @@ if ($rgExists -eq $true) {
 }
 
 # List resources in the resource group after deployment
+
 az resource list --resource-group $AzureResourceGroupName -o table
