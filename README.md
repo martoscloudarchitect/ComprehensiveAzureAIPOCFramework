@@ -126,7 +126,7 @@ Hands-on validation of deployed resources with step-by-step procedures:
 
 ``````powershell
 # 1. Clone the repository
-git clone https://github.com/yourusername/secure_ai.git
+git clone https://github.com/martoscloudarchitect/ComprehensiveAzureAIPOCFramework.git
 cd secure_ai
 
 # 2. Login to Azure
@@ -259,3 +259,4 @@ This isn't a "demo-only" environment with security tacked on later. It's **Zero 
 📢 **Spread the word** to help others build better cloud environments
 
 </div>
+
