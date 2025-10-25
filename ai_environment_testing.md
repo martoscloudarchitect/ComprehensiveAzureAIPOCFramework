@@ -347,68 +347,95 @@ AppServiceHTTPLogs
 
 ## Section 4: Azure AI Foundry Configuration
 
+It is time to get this party started and give a purpose for all this infrastructure we have deployed so far.
+
+This sections will guide you through the configuration and validation of Azure AI Foundry (Cognitive Services) for deploying and managing AI models. We will deploy models, retrieve API keys, and test connectivity in the low security environment first. Then, we will break the solution, YES! 
+
+We will show how a secure environment behind your Azure Subscription 4 walls is built around this AI Foundry service, preventing access from external sources even if they are given the access API and key. 
+
+We will protect it from unwanted access, and trust me when I say: This is not a rocket science, it is actually extremely easy and no more effort than doing the least secure way, it is more a change of mindset rather than a technical challenge. And what you will learn here is easily automated via IaC (bicep/terraform/arm templates).
+
 ### Objectives
 
 Validate Azure AI Foundry (Cognitive Services) deployment, model availability, and API endpoint configuration.
 
-### Langugage Model Deployment Steps
+### Identify the AI Foundry Resource (Resource Loevel API Endpoints and Keys)
+It is funny when we say, we will show what you should not use nor share, but it is important to know what they are, so you understand the risks of sharing them and how to protect them properly.
 
+To verify the resource level API endpoints and keys for Azure AI Foundry follow these steps:
 1. In the Azure portal, navigate to your AI Foundry resource.
-2. From the left blade menu, select **Projects**, you will see a default project created during deployment (e.g., `default-project` or `your-custom-project-name`).
-3. Select your project to open it, and Click on ``Go to Azure AI Foundry portal``. **Deployments** from the left menu.
-4. Click **+ Add deployment** to create a new model deployment.
-5. Choose the model you want to deploy (e.g., GPT-4o, GPT-3.5-turbo).
-6. Configure the deployment settings (e.g., name, scale).
-7. Click **Create** to deploy the model.
-
-### Validation Steps
-
-#### 4.1 Access AI Foundry Resource
-1. Navigate to **Azure AI services** or **Cognitive Services**
-2. Select your deployed AI Foundry resource
-3. Review the **Overview** page
-
-![AI Foundry Overview](99_Images/13_ai_foundry_overview.png)
-
-#### 4.2 Verify Deployed Models
-1. In the AI Foundry blade, select **Model deployments** (or **Deployments**)
-2. Confirm the following models are deployed:
-   - **GPT-4o** - For advanced reasoning tasks
-   - **GPT-3.5-turbo** - For general-purpose chat
-   - **text-embedding-ada-002** - For embeddings (optional)
-
-3. For each model, note:
-   - Deployment name
-   - Model version
-   - Capacity (Tokens Per Minute - TPM)
-
-![Model Deployments](99_Images/14_model_deployments.png)
-
-#### 4.3 Retrieve API Keys and Endpoint
-1. Select **Keys and Endpoint** from the left menu
-2. Copy the following information (store securely):
+2. On the left blade menu, under ``Resource Management`` section, select **Keys and Endpoints**.
+3. Become familiar with the following information:
    - **Endpoint URL**: `https://<resource-name>.openai.azure.com/`
    - **Key 1**: Primary API key
    - **Key 2**: Secondary API key (for key rotation)
    - **Location**: Azure region
+4. At the lower part of the page, you will see the **API Versions** supported, you will notice the following options that you should be familiar with:
+   - ``AI Foundry`` - Latest features and models
+   - ``OpenAI`` - Legacy support for OpenAI models
+   - ``Custom`` - For any custom models you deploy
+5. Note: These keys provide access to the AI Foundry service and should be protected securely.
+![AI Foundry Keys and Endpoint](99_Images/Resource_Group_aifoundry_resource_endpoint_and_keys.jpg)
 
-![Keys and Endpoint](99_Images/15_keys_endpoint.png)
+### Language Model Deployment Steps
+
+1. From the left blade menu, select **Projects**, you will see a default project created during deployment (e.g., `default-project` or `your-custom-project-name`).
+
+![Azure AI Foundry Projects](99_Images/Resource_Group_aifoundry_resource.jpg)
+
+2. Select your project to open it, and Click on ``Go to Azure AI Foundry portal``. A new tab will open the AI Foundry portal.
+
+![AI Foundry for the Project](99_Images/Resource_Group_aifoundry_projects.jpg)
+
+3. You are now in the Azure AI Foundry Portal, on the left blade menu, and locate at the lower end the option ``My assets``, select **Models and Endpoints**.
+4. In the main page area, under ``Model deployments``, select **+ Deploy model** .
+5. In the **Select a base model** pane, choose the model you want to deploy (e.g., GPT-4o, GPT-3.5-turbo).
+
+![AI Foundry Base Model Deployment](99_Images/Resource_Group_aifoundry_deploy_models.jpg)
+
+6. Choose the model you want to deploy (e.g., GPT-4o, GPT-3.5-turbo).
+7. Click **Confirm** to proceed with the model deployment.
+![GPT-4o-mini](99_Images/Resource_Group_aifoundry_deploy_gpt40mini.jpg)
+8. In the **Configure deployment** pane, provide the following details:
+   - **Deployment name**: A unique name for your model deployment (e.g., `gpt4o-mini` - it is a best practice to include the model name in the deployment name for easy identification, and avoid more than one model of the same time, unless wanted due to tokenization control on different services for the same model).
+   - **Deployment Type**: Click on the dropdown to change from default to select `Standard` for general-purpose use API Call test, understand the difference between default and the option chosen. (More or less expensive? Better or Worse for production, etc.)
+   - In the ``Deployment Details`` section, change the Tokens per Minute Rate Limit (TPM) to a suitable value based on your expected usage, e.g., `50k` TPM for testing purposes. (Note: Higher TPM rates may incur additional costs POC Costs, but for a production workload, you may want to increase this limit.)
+   - Notice the ``Content filtering`` section, this is important to understand, as it will help you control the type of content that can be generated by the model. For testing purposes, you can leave it as default, but for production workloads, consider customizing these settings based on your organization's content policies.
+9. Click **Deploy** to start the deployment process and wait for the new screen to show your new model deployment.
+    
+![GPT-4o-mini settings](99_Images/Resource_Group_aifoundry_model_gpt40mini_creation.jpg)
+
+10.  Become familiar with the deployment details, once displayed on the screen to confirm the following key fields:
+   - In the ``Endpoint`` section, just observe that there is a model specific **Target URI** and  **Key** that can be used for API calls specifically for this model deployment.
+   - In the ``Deployment Details`` section, confirm:
+   -  **Deployment name**: It will be required for your python or REST API calls.
+   - **Model version**: Confirm the correct model version is deployed.
+   - **Status**: Should show `Running` once deployed
+   - **Rate Limit**: Tokens Per Minute (TPM) limit
+   - In the Upper right corner, you can change a base code that can be used to test the model, this project uses Python and REST API samples, but feel free to explore other SDKs and languages.
+
+![GPT-4o-mini properties](99_Images/Resource_Group_aifoundry_model_gpt40mini_attributes.jpg)
+
+### Validation Steps to make API Calls to Azure AI Foundry Services
+
+#### Retrieve API Keys and Endpoint
+
+1. Back to the Azure Portal, go to your Azure AI Foundry Service, select **Keys and Endpoint** from the left blade menu
+2. Copy and take note the following information (store securely) as you will need them for API calls:
+   - **Endpoint URL**: `https://<resource-name>.openai.azure.com/`
+   - **Key 1**: Primary API key, or alternatively use Key 2
+   - **Location**: Azure region
+
+![Keys and Endpoint](99_Images/Resource_Group_aifoundry_resource_openai_endpoint_and_keys.jpg)
 
 > **Security Best Practice**: Use **Key Vault** to store API keys. For production workloads, use **Managed Identity** instead of API keys.
 
-#### 4.4 Configure Managed Identity (Recommended)
-1. In the AI Foundry blade, select **Identity**
-2. Enable **System assigned** managed identity
-3. Set status to **On**
-4. Click **Save**
-5. Navigate to **Access control (IAM)**
-6. Add role assignment: **Cognitive Services OpenAI User**
-7. Assign to your App Service or VM managed identity
 
-![Managed Identity Configuration](99_Images/16_managed_identity.png)
 
-#### 4.5 Test API Connectivity
-Use the Azure AI Studio or Postman to test API calls:
+#### Test API Connectivity
+Use your tool of choice, such as the Azure AI Studio or Postman, to test API calls. Here we will be using Visual Studio Code with REST API and Python samples.:
+
+In your local machine, open Visual Studio Code or your preferred IDE.
 
 **Sample Request (REST API):**
 ```bash
@@ -438,6 +465,18 @@ response = client.chat.completions.create(
 
 print(response.choices[0].message.content)
 ```
+
+#### Configure Managed Identity (Recommended)
+
+1. In the AI Foundry blade, select **Identity**
+2. Enable **System assigned** managed identity
+3. Set status to **On**
+4. Click **Save**
+5. Navigate to **Access control (IAM)**
+6. Add role assignment: **Cognitive Services OpenAI User**
+7. Assign to your App Service or VM managed identity
+
+![Managed Identity Configuration](99_Images/16_managed_identity.png)
 
 **Sample Request (Python with Managed Identity):**
 ```python
