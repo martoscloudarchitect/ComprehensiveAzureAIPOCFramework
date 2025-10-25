@@ -2,29 +2,40 @@
 
 ## Overview
 
-Once the Azure resources are deployed using Infrastructure as Code (IaC), it's time to validate and familiarize yourself with the environment. This guide provides step-by-step procedures to test, configure, and verify all deployed components.
+Once the Azure resources are deployed using Infrastructure as Code (IaC), it's time to be even more hands on. 
+- We start by validating and familiarizing with the environment and acknowleding the uncessary exposure, then we will make it secure. 
+- This guide provides step-by-step procedures to test, configure, and verify all deployed components.
 
-At this point, all Azure resources should be successfully deployed as shown in the image below. However, they require configuration and validation before they can be used effectively.
+So, this is where our state is:
+- At this point, all Azure resources should be successfully deployed as shown in the image below. However, they require configuration and validation before they can be used effectively.
 
 ![Deployed Azure Resources](99_Images/resource_deployment_service_view.jpg)
 ---
 
-## Target Audience
+## Target Audience are all tribes, this is a big party!
 
-This guide is designed for:
+Even if infrastructure management is not your primary role, this guide will help you understand the requirements and perform basic checks to ensure your AI environment is properly configured with appropriate controls and visibility.
+
+This guide is bring all teams together as follows:
 
 - **Azure Solutions Architects** - Validating architecture implementation
 - **Azure Administrators** - Configuring and managing deployed resources
 - **Software Developers** - Understanding infrastructure capabilities and constraints
 - **Data Engineers & Data Scientists** - Preparing the environment for AI workloads
-
-Even if infrastructure management is not your primary role, this guide will help you understand the requirements and perform basic checks to ensure your AI environment is properly configured with appropriate controls and visibility.
+- **Security Engineers** - Ensuring compliance with security best practices
+- **C-Suite & IT Managers** - Overseeing project progress and resource allocation
 
 ---
 
 ## Deployment Benchmark
 
-The complete infrastructure deployment typically completes in **2-3 minutes**, as shown in the benchmark below:
+The complete infrastructure deployment typically completes in **2-4 minutes**, as shown in the benchmark below.
+Imagine that this simple but powerful environment is the foundation for your AI workloads, ready to be configured and secured for production use. It also adds the value of making a baseline deployment repeatable and consistent across different environments, ensuring that every deployment adheres to best practices and organizational standards.
+- It becomes repeatable, predictable, measurable, consistent, traceable, and reliable for existing users and also a documentation reference for future deployments by new members of the organization.
+
+Observation: 
+- The deployment time may vary based on the complexity of the resources being provisioned and the current load on the Azure platform. 
+- The 7th deployment is optional (07_vpngateway.bicep) and represents the deployment of the VPN Gateway, which typically takes longer due to backend provisioning processes (~ about 40 minutes on average but in extreme cases, it could take longer).
 
 ![Deployment Benchmark](99_Images/resource_deployment_deployment_view.jpg)
 ---
@@ -59,9 +70,10 @@ Understand and be familiar with the deployed virtual network (VNet) architecture
 
 #### 1.1 Navigate to Virtual Network
 1. Open the **Azure Portal**
-2. Navigate to **Virtual Networks**
-3. Select your deployed VNet (format: `vnet-<resourceGroupName>`)
-4. In the overview page, verify:
+2. Go to your resource group created for this project
+3. Navigate to **Virtual Networks**
+4. Select your deployed VNet (format: `vnet-<resourceGroupName>`)
+5. In the overview page, verify:
    - Name
    - Resource group
    - Location
@@ -73,11 +85,21 @@ Understand and be familiar with the deployed virtual network (VNet) architecture
 
 #### 1.2 Review Address Space
 
+Strong foundation, unbeatable project!
+
 No proper IPv4 CIDR planning is a common cause of network conflicts and issues in hybrid or multi-cloud environments, as well when introducing new workloads network in isolation able to communicate with existing resources.
 
-1. In the VNet blade, select **Address space** from the left menu
-2. Verify the CIDR range in the scope of your project and deployment (e.g. this document used the range: `10.2.0.0/16`)
-3. Confirm no overlapping address spaces with other VNets (if applicable). 
+let's ensure the address space is correctly configured and is known to you.
+
+1. In the VNet resource blade, select **Address space** from the left menu under `Settings`.
+2. Next, click on **Subnets** from the left menu under `Settings` to view subnet address ranges.
+3. Verify the CIDR range in the scope of your project and deployment (e.g. this document used the range: `10.2.0.0/16`)
+4. Confirm no overlapping address spaces with other VNets (if applicable).
+5. Ask yourself and try to confirm:
+   - Is this range suitable for your organization's network architecture public and private IP ranges?
+   - Does it avoid conflicts with on-premises or other cloud networks?
+   - Is there sufficient IP address space for current and future workloads?
+   - Why does SpokeSubnet1vm has less IP addresses than the other subnets?    (Hint: Other workloads deployed here may already be assigned some IPs in this subnet, if so, what are they?)
 
 In case of overlap, with the default IP Range proposed in the bicep file, you can modify the bicep vnet deployment section to use a different range and re-run the deployment. Alternatively, you can also manually adjust the address space in the Azure Portal if no resources are yet deployed as per illustration below. But remember, that will no longer match the IaC definition and re-running the deployment may cause conflicts.
 
@@ -107,9 +129,18 @@ In the Azure Portal, open the virtual network resource. From the VNet resource b
 
 #### 1.4 Check your VNET Association with DNS Private Zone
 
+Why private DNS zone association is important?
+
+Imagine trying to call your AI services (like Azure OpenAI) from your applications without the ability to resolve their private IP addresses. The value is that it enables secure and efficient communication between your applications and the AI services without exposing them to the public internet and concerns about static IP changes. 
+- Without proper DNS resolution, your applications would struggle to connect to these services securely and efficiently. 
+- Especially when using private endpoints, DNS resolution is crucial to ensure that your applications can locate and communicate with the services over the private network.
+
 The private DNS association with your VNET allows the resolution of private endpoint FQDNs to private IP addresses within your VNet. The value of having this now, later on is that it will make it super simple for your applications to reach the AI services via private endpoints later on.
 
-Here we will just make a quick check and make you aware on the automated bicep deployment for the VNET in association to the DNS private zone service during your deployment design.
+As resource is already deployed via bicep, we will keep this check simple.
+- Here we will just make a quick check and make you aware on the automated bicep deployment for the VNET in association to the DNS private zone service during your deployment design.
+
+Follow these steps to verify the DNS server settings for your VNet resource:
 
 1. In the Azure Portal, navigate to your Virtual Network (VNET) resource in the resource group.
 2. From the VNet resource blade, select **DNS servers** from the left menu.
@@ -122,11 +153,20 @@ Here we will just make a quick check and make you aware on the automated bicep d
 
 #### 1.5 (Optional) Check Network Security Groups (NSG) -  not initially implemented
 
-To set some limits on network traffic, NSGs are used.
+Why this optional NSG enablement is valuable?
+
+- It allows for more granular control over network traffic and can help to mitigate potential security risks. 
+
+For analogy, think of NSGs as local security guards at the entrance of each subnet, ensuring that only authorized traffic is allowed in and out based on predefined rules will have access to that room of the house. 
+
+Important! 
+- While local guards (NSGs) control access at the room level, a central security system (Azure Firewall) oversees the entire property, providing a broader layer of security and monitoring.
+
+To set some limits on network traffic, NSGs are typically used.
 
 We have intentionally kept the NSG rules as optional, hence this is out of initial deployment to allow flexibility during testing and configuration.
 
-However, in a production environment, it's crucial to implement strict NSG rules to enforce the Zero Trust security model, as this does not overlap with Azure Firewall appliances. They complement each other because NSGs control traffic at the network interface level, while Azure Firewall provides a centralized point for logging and policy enforcement.
+In a production environment, it's crucial to implement strict NSG rules to enforce the Zero Trust security model, as this does not overlap with Azure Firewall appliances. They complement each other because NSGs control traffic at the network interface level, while Azure Firewall provides a centralized point for logging and policy enforcement.
 
 If you have already configured NSG rules, verify you can follow the steps below:
 
@@ -136,40 +176,52 @@ If you have already configured NSG rules, verify you can follow the steps below:
 
 ---
 
-## Section 2: Private DNS Zone Configuration
+## Section 2: Private DNS Zone Configuration Check
 
-### Objective
+### Objectives
+
 Validate Private DNS Zone deployment and VNet integration for private endpoint name resolution and become familiar with the Private DNS Zone deployment at basic level in this project.
 
 ### Validation Steps
 
 #### 2.1 Locate Private DNS Zone
 
-1. In the Azure Portal, navigate back to your resoruce group created for this project and identify the **Private DNS zone** resource created.
+1. In the Azure Portal, navigate back to your resource group created for this project and identify the **Private DNS zone** resource created.
 2. Identify your deployed zone (e.g., `privatelink.openai.azure.com`)
 3. Note the zone name and resource group
 
 ![alt text](99_Images/resource_deployment_dns.jpg)
 
 #### 2.2 Verify VNet Link
-1. In the Private DNS zone blade, in the **Settings** section,select **Virtual network links**
+
+Why is this valuable?
+
+Verify VNet Link means checking that your private DNS zone (a secure name directory for internal resources) is correctly connected to your virtual network (VNet).
+
+Reliable Connectivity: Ensures all internal systems can “find” each other easily, like having a complete phone book for your company’s private network.
+
+- Automation: Auto-registration saves time and reduces human error—new services are discoverable instantly.
+- Security & Control: Keeps everything inside your private environment, reducing exposure to the public internet.
+
+Perform the following checks:
+
+1. In the Private DNS zone blade, in the **DNS Management** section, select **Virtual network links**
 2. Confirm the VNet link exists
 3. Verify the following settings:
    - **Link status**: Completed
    - **Virtual network**: Your deployed VNet
    - **Auto-Registration** is set to enabled (for privatelink zones)
 
-![VNet Link Configuration](99_Images/07_vnet_link.png)
+![VNet Link Configuration](99_Images/resource_deployment_dns_vnetlink_check.jpg)
 
-#### 2.3 Validate DNS Settings in VNet
-1. Return to your Virtual Network
-2. Select **DNS servers** from the left menu
-3. Confirm DNS server configuration:
-   - **Default (Azure-provided)** - For automatic private endpoint resolution
-   - OR **Custom** - If using custom DNS forwarders
+#### 2.3 (Optional) Test DNS Resolution
 
-![VNet DNS Configuration](99_Images/resource_deployment_dns_privatelinkcheck.jpg)
-#### 2.4 Test DNS Resolution (Optional)
+At this point you have Azure AI foundry Services that allows you to deploy AI models. 
+
+In order to test this extra step you will have to skip to section down below and make sure you have an AI Model Deployed to validate the API DNS Resolution.
+
+- Got to Section 4: Azure AI Foundry Configuration below: here is the link to this section: [Section 4: Azure AI Foundry Configuration](#section-4-azure-ai-foundry-configuration)
+
 If you have a VM deployed, test DNS resolution:
 
 ```bash
@@ -186,47 +238,95 @@ Expected result: Private IP address from your VNet range
 
 ## Section 3: Log Analytics Workspace Validation
 
+The main value of Log Analytics is to provide a centralized platform for collecting, analyzing, and visualizing log and performance data from various Azure resources. 
+
+The value of a proper Log Analytics implementation is multi-fold:
+
+- **Proactive Monitoring**: Enables real-time insights into your AI environment's health and performance.
+- **Troubleshooting**: Simplifies root cause analysis with rich query capabilities.
+- **Optimization**: Identifies areas for improvement, helping to fine-tune resource usage and performance.
+- **Compliance and Auditing**: Maintains logs for security audits and compliance requirements.
+- **Cost Management**: Tracks resource consumption, aiding in budget management and cost optimization. Allowing for resource lifecycle management and optimization proactively rather than reactively.
+
 ### Objective
+
 Verify Log Analytics Workspace deployment, data retention settings, and diagnostic data collection.
 
 ### Validation Steps
 
+Don't worry you won't get bored, this is quick and easy and is extremely powerful and easy to understand, as it has been deployed via IaC using bicep already
+
 #### 3.1 Access Log Analytics Workspace
-1. Navigate to **Log Analytics workspaces** in the Azure Portal
+
+1. From your Azure resource group created to this project, navigate to **Log Analytics workspaces** in the Azure Portal
 2. Select your deployed workspace
 3. Review the **Overview** page for:
    - Workspace ID
    - Resource group
    - Location
-   - Pricing tier (typically `PerGB2018`)
+   - Pricing tier (Should show Pay-As-You-Go, typically `PerGB2018`)
+   - Operational Issues
 
-![Log Analytics Overview](99_Images/09_log_analytics_overview.png)
+![Log Analytics Overview](99_Images/Resource_Group_LGA_overview.jpg)
 
 #### 3.2 Verify Retention Settings
-1. In the workspace blade, select **Usage and estimated costs**
+
+A common oversight is not configuring data retention policies, which can lead to many easy to avoid issues including but not limited to:
+
+- Inadequate or excessive log retention for compliance audits and troubleshooting;
+- Unexpectedly high storage costs due to indefinite data retention;
+- Difficulty in managing and analyzing large volumes of log data over time.
+
+To ensure proper data retention settings per your organization's requirements, follow these steps:
+
+1. In the workspace blade, navigate in the left menu under ``settings`` and select **Usage and estimated costs**
 2. Click **Data retention**
 3. Confirm retention period (default: 30 days)
 4. Check daily cap settings (quota management)
 
-![Data Retention Settings](99_Images/10_retention_settings.png)
+![Data Retention Settings](99_Images/Resource_Group_LGA_retention.jpg)
 
 #### 3.3 Check Diagnostic Settings
-1. Navigate to your deployed resources (VNet, OpenAI, App Service, etc.)
-2. For each resource, select **Diagnostic settings**
-3. Verify that logs and metrics are being sent to Log Analytics
-4. Confirm the following log categories are enabled:
-   - **Azure OpenAI**: Audit, RequestResponse, Trace
+
+The value of enabling diagnostic settings is that it allows you to collect and analyze logs and metrics from your Azure resources. 
+
+From my personal experience, this has been invaluable for troubleshooting and optimizing resource performance. Hence providing insights into their performance against design and operational expectations, health, and security.
+
+- This proactive monitoring helps in identifying issues early, optimizing resource usage, and ensuring compliance with organizational policies.
+
+Follow these steps for each of the resources you plan to enable diagnostics and gain valuable insights from
+
+To verify diagnostic settings for each of your resources:
+
+1. In your project resource group, navigate to your deployed resources (VNet, OpenAI, App Service, etc.)
+2. For each resource, typicaly on the resource left blade at the lower part, under the ``monitoring`` section, select **Diagnostic settings** as per resource illustration below.
+3. Verify that logs and metrics are being sent to Log Analytics created for this project. - Consider enabling for the resource below (intentionally not configured during deployment for familiarization and cost control):
+   - Azure OpenAI / AI Foundry
+   - App Service
+   - Virtual Network
+4. (optional but totally worth it) If not configured, create a new diagnostic setting:
+   - Click **+ Add diagnostic setting**
+   - Name the setting (e.g., `diag-<resource-name>`)
+   - In the ``Destination details`` sextion, select **Send to Log Analytics workspace**
+   - Choose your Log Analytics workspace
+5. Confirm the following log categories are enabled:
+   - **Azure AIFoundry**: Audit, RequestResponse, Trace, AllMetrics
    - **App Service**: AppServiceHTTPLogs, AppServiceConsoleLogs, AppServiceAppLogs
    - **Virtual Network**: VMProtectionAlerts
+6. Click **Save**
 
-![Diagnostic Settings](99_Images/11_diagnostic_settings.png)
+![Diagnostic Settings](99_Images/Resource_Group_LGA_enabling.jpg)
 
 #### 3.4 Query Sample Data
-1. In the Log Analytics workspace, select **Logs**
-2. Run a sample query to verify data ingestion:
+1. Either from the Log Analytics workspace, or from your other Azure resources enabled with log analytics, in the left blade menu, typically under ``monitoring``, select **Logs**
+2. Close the introduction pane if it appears, look for the ``X`` mark in the top right corner.
+3. Run a sample query to verify data ingestion, here is one for Azure OpenAI requests and one for App Service logs if you have done tests.:
+
+If you have not done any tests yet, you can skip this step for now and come back later once you have done some API calls to Azure OpenAI from your App Service application and come back laters
 
 ```kql
-// Check recent Azure OpenAI requests
+// Kusto Query Language (KQL) sample for Azure OpenAI requests
+// Use this to check recent Azure OpenAI requests
 AzureDiagnostics
 | where ResourceType == "COGNITIVESERVICES"
 | where Category == "RequestResponse"
@@ -247,8 +347,19 @@ AppServiceHTTPLogs
 
 ## Section 4: Azure AI Foundry Configuration
 
-### Objective
+### Objectives
+
 Validate Azure AI Foundry (Cognitive Services) deployment, model availability, and API endpoint configuration.
+
+### Langugage Model Deployment Steps
+
+1. In the Azure portal, navigate to your AI Foundry resource.
+2. From the left blade menu, select **Projects**, you will see a default project created during deployment (e.g., `default-project` or `your-custom-project-name`).
+3. Select your project to open it, and Click on ``Go to Azure AI Foundry portal``. **Deployments** from the left menu.
+4. Click **+ Add deployment** to create a new model deployment.
+5. Choose the model you want to deploy (e.g., GPT-4o, GPT-3.5-turbo).
+6. Configure the deployment settings (e.g., name, scale).
+7. Click **Create** to deploy the model.
 
 ### Validation Steps
 
