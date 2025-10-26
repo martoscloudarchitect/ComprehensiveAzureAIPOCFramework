@@ -1,5 +1,7 @@
 # Secure Azure AI Environment: From Zero to Production-Ready in Minutes
 
+
+
 > **Transform how you build Azure AI environments—from throwaway PoCs to strategic assets that scale.**
 
 [![Azure](https://img.shields.io/badge/Azure-0078D4?style=flat&logo=microsoft-azure&logoColor=white)](https://azure.microsoft.com)
@@ -8,6 +10,11 @@
 [![Cost](https://img.shields.io/badge/Cost-$1.03/day-brightgreen)](https://azure.microsoft.com/pricing/)
 
 ---
+
+This repository is designed for **Azure Solutions Architects, Security Teams, Developers, Data Scientists, and CTOs** who want to **accelerate their Azure AI initiatives without compromising on security or compliance**. 
+
+The mission with this repository is:
+- **Stop building throwaway PoCs. Start building strategic assets.**
 
 ## 🎯 The Problem Everyone Faces
 
@@ -62,6 +69,95 @@ A complete, enterprise-grade Azure AI environment featuring:
 **Deployment time**: 2-3 minutes per component | **Total setup**: < 30 minutes
 
 ![Architecture Overview](99_Images/AzurePOC_Main_Components.jpg)
+
+---
+
+
+
+Here is the view of this project using the OSI models with the components associated to each of the 7 layers.
+
+# Azure Services Architecture - OSI Layer Mapping
+
+## OSI-Inspired Azure Services Stack for Secure AI Environment
+
+```
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                            LAYER 7: APPLICATION                               
+║  🤖 Azure OpenAI Service (GPT-4o, GPT-3.5-turbo)                              
+║  🏗️  Azure AI Foundry (Model Management & Deployment)                         
+║  🐍 Streamlit Web App (Python 3.11)                                           
+║  📱 REST APIs & SDKs (OpenAI-compatible endpoints)                            
+║  💼 Business Logic & Custom Applications                                      
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                          LAYER 6: PRESENTATION                                
+║  🌐 Azure App Service (Linux B2 - 2vCPU, 3.5GB RAM)                           
+║  📦 Azure Container Instances (Serverless containers)                         
+║  🖥️  Azure Virtual Machines (Windows Server 2022, B2s)                     
+║  🏰 Azure Bastion (Secure RDP/SSH access)                                   
+║  📊 Application Insights (APM & User Analytics)                             
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                            LAYER 5: SESSION                                 
+║  🔐 Azure Active Directory / Entra ID (Identity Provider)                   
+║  🆔 Managed Identity (System & User Assigned)                               
+║  🔑 Azure Key Vault (Secrets, Keys, Certificates)                         
+║  👥 RBAC (Cognitive Services OpenAI User, Key Vault Secrets User)         
+║  🛡️  Conditional Access Policies (MFA, Device Compliance)                  
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                           LAYER 4: TRANSPORT                               
+║  🔒 HTTPS/TLS 1.2+ (End-to-end encryption)                                 
+║  🔗 Private Endpoints (Azure OpenAI, Key Vault, Storage)                   
+║  ⚖️  Azure Load Balancer (Layer 4 traffic distribution)                    
+║  🚪 Application Gateway (Layer 7 load balancer + WAF)                      
+║  📡 Service Endpoints (VNet-to-service direct routing)                     
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                            LAYER 3: NETWORK                                
+║  🏗️  Virtual Network (VNet 10.2.0.0/16)                                   
+║      ├─ Hub Subnet (10.2.0.0/24) - Shared services                        
+║      ├─ Spoke Subnet 1 (10.2.1.0/24) - VM workloads                      
+║      ├─ Spoke Subnet 2 (10.2.2.0/24) - App Service integration           
+║      ├─ Spoke Subnet 3 (10.2.3.0/24) - Private endpoints                 
+║      └─ Gateway Subnet (10.2.254.0/26) - VPN/ExpressRoute                 
+║  🛡️  Network Security Groups (NSGs) - Subnet firewalls                     
+║  🔥 Azure Firewall (Centralized network security - optional)               
+║  📋 Route Tables (Custom routing definitions)                              
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                          LAYER 2: DATA LINK                               
+║  🌐 Private DNS Zones (privatelink.openai.azure.com)                       
+║  🔗 DNS Zone Links (VNet integration for name resolution)                  
+║  🌉 VNet Peering (Inter-VNet connectivity - future)                        
+║  🏢 ExpressRoute/VPN Gateway (Hybrid connectivity)                         
+║  📍 Azure DNS (Public DNS resolution)                                       
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                           LAYER 1: PHYSICAL                               
+║  🌍 Azure Regions (West US 2, East US, etc.)                              
+║  🏢 Availability Zones (Fault-isolated locations)                          
+║  💻 Compute Resources (vCPU, Memory, Disk)                                 
+║  💾 Azure Storage (Managed Disks, Blob Storage, File Shares)              
+║  🔧 Azure Infrastructure (Microsoft-managed hardware)                      
+╚═══════════════════════════════════════════════════════════════════════════════╝
+```
+
+---
+
+## Cross-Layer Services (Observability & Governance)
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                          MONITORING & LOGGING                               
+║  📊 Azure Log Analytics Workspace (Centralized logging - KQL queries)      
+║  📈 Azure Monitor (Metrics, alerts, dashboards)                            
+║  🔍 Application Insights (APM, dependency tracking)                        
+║  🛡️  Microsoft Defender for Cloud (Security posture management)           
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                          DEPLOYMENT & GOVERNANCE                            
+║  📜 Azure Resource Manager (ARM) - Infrastructure orchestration            
+║  🏗️  Bicep Templates (Infrastructure as Code)                              
+║  📋 Azure Policy (Compliance and governance)                               
+║  🏷️  Resource Tags (Cost allocation and management)                        
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+For the full spec-tech cheat sheet, 👉 **[Click here to see: Technical Spec →](tech_spec.md)**
 
 ---
 
@@ -133,7 +229,11 @@ cd ComprehensiveAzureAIPOCFramework
 az login
 
 # 3. Create resource group
-az group create --name my-ai-sandbox --location eastus
+cd 01_bicep_resource_group_creation
+Edit the ``.env`` file to set your parameters
+run the powershell command below:
+.\00_az_login_rg_create.ps1
+
 
 # 4. Deploy Virtual Network (first component)
 cd 01_bicep_resource_base_deployment
@@ -142,7 +242,7 @@ az deployment group create `
   --template-file 02_vnet_snet.bicep `
   --mode Incremental
 
-# 5. Deploy remaining components (one at a time, see Part 1 guide)
+# 5. Deploy remaining components (one at a time, see Part 1 guide below)
 ``````
 
 **Expected result**: A secure Virtual Network deployed in 60 seconds.
@@ -259,5 +359,3 @@ This isn't a "demo-only" environment with security tacked on later. It's **Zero 
 📢 **Spread the word** to help others build better cloud environments
 
 </div>
-
-
