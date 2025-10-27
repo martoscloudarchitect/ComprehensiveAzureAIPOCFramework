@@ -335,8 +335,8 @@ This isn't a "demo-only" environment with security tacked on later. It's **Zero 
 **Value delivered**: Weeks of avoided rework + $1,000s in cost savings
 
 1. **Start Here**: Read this README (you are here! ✓)
-2. **Part 1**: [Deploy Infrastructure](ai_environment_deployment.md) - 15 minutes
-3. **Part 2**: [Validate & Test](ai_environment_testing.md) - 15 minutes
+2. **Part 1**: [To Deploy Infrastructure - Click Here](ai_environment_deployment.md) - 15 minutes
+3. **Part 2**: [To Validate & Test - Click Here](ai_environment_testing.md) - 15 minutes
 4. **Optional**: Deploy AI Application (see `02_AI_Agent/` folder)
 5. **Advanced**: Scale to production using the same patterns
 
@@ -359,6 +359,7 @@ This isn't a "demo-only" environment with security tacked on later. It's **Zero 
 📢 **Spread the word** to help others build better cloud environments
 
 </div>
+
 
 
 
