@@ -11,7 +11,7 @@
 
 ---
 
-This repository is designed for **Azure Solutions Architects, Security Teams, Developers, Data Scientists, and CTOs** who want to **accelerate their Azure AI initiatives without compromising on security or compliance**. 
+This repository is designed to explore all rooms in the house, aiming for **CTO, IT Directors, Manager, Azure Solutions Architects, Security Teams, Developers and Data Scientists** who want to **accelerate their Azure AI initiatives without compromising on security or compliance**. 
 
 The mission with this repository is:
 - **Stop building throwaway PoCs. Start building strategic assets.**
@@ -359,5 +359,6 @@ This isn't a "demo-only" environment with security tacked on later. It's **Zero 
 📢 **Spread the word** to help others build better cloud environments
 
 </div>
+
 
 
