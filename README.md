@@ -194,7 +194,7 @@ Not everything in this repo is new, but do you have a full end to end mindset co
 
 This is a **learn-by-doing** journey structured in two parts:
 
-### **Part 1: [Infrastructure Deployment](ai_environment_deployment.md)** (15 minutes)
+### **Part 1: [Infrastructure Deployment - Click Here for Detailed Step by Step](ai_environment_deployment.md)** (15 minutes)
 Deploy production-grade Azure infrastructure using Infrastructure as Code (Bicep):
 - Virtual Network with hub-spoke topology
 - Private DNS Zones for service isolation
@@ -205,7 +205,7 @@ Deploy production-grade Azure infrastructure using Infrastructure as Code (Bicep
 
 **What you'll learn**: Azure networking, security layers, Infrastructure as Code principles, cost optimization
 
-### **Part 2: [Environment Testing & Validation](ai_environment_testing.md)** (15 minutes)
+### **Part 2: [Environment Testing & Validation - Click Here for Detailed Step by Step](ai_environment_testing.md)** (15 minutes)
 Hands-on validation of deployed resources with step-by-step procedures:
 - Network connectivity verification
 - DNS resolution testing
@@ -359,6 +359,7 @@ This isn't a "demo-only" environment with security tacked on later. It's **Zero 
 📢 **Spread the word** to help others build better cloud environments
 
 </div>
+
 
 
 
