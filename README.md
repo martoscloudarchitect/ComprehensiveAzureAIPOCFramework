@@ -72,11 +72,9 @@ A complete, enterprise-grade Azure AI environment featuring:
 
 ---
 
-
+# Azure Services Architecture - OSI Layer Mapping
 
 Here is the view of this project using the OSI models with the components associated to each of the 7 layers.
-
-# Azure Services Architecture - OSI Layer Mapping
 
 ## OSI-Inspired Azure Services Stack for Secure AI Environment
 
@@ -359,3 +357,4 @@ This isn't a "demo-only" environment with security tacked on later. It's **Zero 
 📢 **Spread the word** to help others build better cloud environments
 
 </div>
+
