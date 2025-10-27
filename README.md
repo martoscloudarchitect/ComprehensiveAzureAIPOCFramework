@@ -190,6 +190,8 @@ For the full spec-tech cheat sheet, 👉 **[Click here to see: Technical Spec �
 
 ## 📚 How to Use This Repository
 
+Not everything in this repo is new, but do you have a full end to end mindset covering all the rooms of the house in a new solution?
+
 This is a **learn-by-doing** journey structured in two parts:
 
 ### **Part 1: [Infrastructure Deployment](ai_environment_deployment.md)** (15 minutes)
@@ -357,4 +359,5 @@ This isn't a "demo-only" environment with security tacked on later. It's **Zero 
 📢 **Spread the word** to help others build better cloud environments
 
 </div>
+
 
