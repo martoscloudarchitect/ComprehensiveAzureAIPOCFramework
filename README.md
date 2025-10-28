@@ -214,40 +214,7 @@ Hands-on validation of deployed resources with step-by-step procedures:
 - Security validation checklists
 - Troubleshooting common issues
 
-**What you'll learn**: Azure operations, monitoring, security verification, production readiness checks
-
----
-
-## 🚀 Quick Start (5 Minutes to First Deployment)
-
-``````powershell
-# 1. Clone the repository
-git clone https://github.com/martoscloudarchitect/ComprehensiveAzureAIPOCFramework.git
-cd ComprehensiveAzureAIPOCFramework
-
-# 2. Login to Azure
-az login
-
-# 3. Create resource group
-cd 01_bicep_resource_group_creation
-Edit the ``.env`` file to set your parameters
-run the powershell command below:
-.\00_az_login_rg_create.ps1
-
-
-# 4. Deploy Virtual Network (first component)
-cd 01_bicep_resource_base_deployment
-az deployment group create `
-  --resource-group my-ai-sandbox `
-  --template-file 02_vnet_snet.bicep `
-  --mode Incremental
-
-# 5. Deploy remaining components (one at a time, see Part 1 guide below)
-``````
-
-**Expected result**: A secure Virtual Network deployed in 60 seconds.
-
----
+**What you'll master**: Azure operations, monitoring, security verification, production
 
 ## 🎓 What Makes This Different
 
